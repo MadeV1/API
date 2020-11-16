@@ -3,7 +3,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import SecurityUser from 'App/Models/SecurityUser'
 
 export default class AuthController {
-  public async register({ request }: HttpContextContract) {
+  public async register({ request, response }: HttpContextContract) {
     const validationSchema = schema.create({
       pseudonym: schema.string({ trim: true }, [rules.minLength(3), rules.maxLength(30)]),
       email: schema.string({ trim: true, escape: true }, [
@@ -22,10 +22,9 @@ export default class AuthController {
     user.password = userDetails.password
     await user.save()
 
-    return {
-      status: 201,
+    return response.status(201).send({
       message: 'Your account has been successfully create',
       data: { user },
-    }
+    })
   }
 }

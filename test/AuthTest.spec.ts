@@ -4,7 +4,7 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Registration', () => {
-  test('ensure registration endpoint works', async (assert) => {
+  test('ensure registration endpoint works', async () => {
     // Test initialization
     const inputs = {
       pseudonym: 'Romain Lanz',
@@ -17,6 +17,5 @@ test.group('Registration', () => {
     const response = await supertest(BASE_URL).post('/register').send(inputs).expect(201)
 
     // Test assertions
-    console.log(response)
   })
 })
