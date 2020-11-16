@@ -7,6 +7,9 @@ export default class SecurityUser extends BaseModel {
   public id: number
 
   @column()
+  public pseudonym: string
+
+  @column()
   public email: string
 
   @column({ serializeAs: null })
