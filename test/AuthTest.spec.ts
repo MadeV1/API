@@ -1,4 +1,4 @@
-import test from 'japa'
+import test, { group } from 'japa'
 import supertest from 'supertest'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
@@ -120,5 +120,47 @@ test.group('Registration', (group) => {
     }
 
     await supertest(BASE_URL).post('/register').send(inputs).expect(422)
+  })
+})
+
+test.group('Login', (group) => {
+  group.beforeEach(async () => {
+    console.log('start DB transaction')
+    await Database.beginGlobalTransaction()
+  })
+
+  group.afterEach(async () => {
+    console.log('rollback DB transaction')
+    await Database.rollbackGlobalTransaction()
+  })
+
+  test('ensure a user can login with correct credentials', async () => {
+    const user = new SecurityUser()
+    user.pseudonym = 'Swith Jeremy'
+    user.email = 'swith.jeremy@hey.com'
+    user.password = 'secret'
+    await user.save()
+
+    const inputs = {
+      email: 'swith.jeremy@hey.com',
+      password: 'secret',
+    }
+
+    await supertest(BASE_URL).post('/login').send(inputs).expect(200)
+  })
+
+  test('ensure login fails with invalid credentials', async () => {
+    const user = new SecurityUser()
+    user.pseudonym = 'Swith Jeremy'
+    user.email = 'swith.jeremy@hey.com'
+    user.password = 'secret'
+    await user.save()
+
+    const inputs = {
+      email: 'swith.jeremy@hey.com',
+      password: 'password',
+    }
+
+    await supertest(BASE_URL).post('/login').send(inputs).expect(400)
   })
 })
