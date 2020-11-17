@@ -1,10 +1,19 @@
 import test from 'japa'
 import supertest from 'supertest'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-test.group('Registration', () => {
-  test('ensure registration endpoint works', async () => {
+test.group('Registration', (group) => {
+  group.beforeEach(async () => {
+    await Database.beginGlobalTransaction()
+  })
+
+  group.beforeEach(async () => {
+    await Database.rollbackGlobalTransaction()
+  })
+
+  test('ensure registration endpoint works', async (assert) => {
     const inputs = {
       pseudonym: 'Romain Lanz',
       email: 'romain.lanz@hey.com',
