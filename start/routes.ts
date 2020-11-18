@@ -20,5 +20,5 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.post('/register', 'AuthController.register')
-Route.post('/login', 'AuthController.login')
+Route.post('/register', 'AuthController.register').middleware('guest')
+Route.post('/login', 'AuthController.login').middleware('guest')
