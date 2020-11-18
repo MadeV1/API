@@ -103,7 +103,7 @@ test.group('Registration', (group) => {
   test('ensure registration failed with password being too short', async () => {
     const inputs = {
       pseudonym: 'Romain Lanz',
-      email: 'romain.lanzhey.com',
+      email: 'romain.lanz@hey.com',
       password: 'sec',
       password_confirmation: 'sec',
     }
@@ -114,7 +114,7 @@ test.group('Registration', (group) => {
   test('ensure registration failed with passwords being differents', async () => {
     const inputs = {
       pseudonym: 'Romain Lanz',
-      email: 'romain.lanzhey.com',
+      email: 'romain.lanz@hey.com',
       password: 'secret',
       password_confirmation: 'secrets',
     }
