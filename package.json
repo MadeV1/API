@@ -35,6 +35,7 @@
     "@adonisjs/mail": "^5.1.0",
     "@adonisjs/repl": "^1.0.0",
     "@adonisjs/session": "^4.0.5",
+    "@adonisjs/view": "^3.0.8",
     "luxon": "^1.25.0",
     "mysql": "^2.18.1",
     "phc-argon2": "^1.0.11",
