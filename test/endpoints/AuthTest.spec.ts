@@ -2,7 +2,6 @@ import test from 'japa'
 import supertest from 'supertest'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
-import AuthManager from '@ioc:Adonis/Addons/Auth'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
