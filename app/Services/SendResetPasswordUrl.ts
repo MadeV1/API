@@ -4,7 +4,7 @@ import SecurityUser from 'App/Models/SecurityUser'
 
 export default class SendResetPasswordUrl {
   public static async send(user: SecurityUser) {
-    const signedUrl = Route.makeSignedUrl('/password/reset', {
+    const signedUrl = Route.makeSignedUrl('password.reset', {
       params: {
         email: user.email,
       },
