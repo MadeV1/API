@@ -16,4 +16,15 @@ export default class PasswordController {
       })
     }
   }
+
+  public async update({ request, response, params }: HttpContextContract) {
+    if (request.hasValidSignature()) {
+      return {
+        code: 'E_MAIL_RESET_SUCCESS',
+      }
+    }
+    return response.status(400).send({
+      code: 'E_INVALID_URL_SIGNATURE',
+    })
+  }
 }
