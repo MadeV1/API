@@ -1,5 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import SecurityUser from 'App/Models/SecurityUser'
 import SendResetMailValidator from 'App/Validators/SendResetMailValidator'
+import UpdatePasswordValidator from 'App/Validators/UpdatePasswordValidator'
 
 export default class PasswordController {
   public async ask({ request, response }: HttpContextContract) {
@@ -19,6 +21,10 @@ export default class PasswordController {
 
   public async update({ request, response, params }: HttpContextContract) {
     if (request.hasValidSignature()) {
+      await request.validate(UpdatePasswordValidator)
+      const user = await SecurityUser.findByOrFail('email', params.email)
+      user.password = request.input('newPassword')
+      await user.save()
       return {
         code: 'E_MAIL_RESET_SUCCESS',
       }

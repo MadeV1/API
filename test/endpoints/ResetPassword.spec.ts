@@ -55,7 +55,7 @@ test.group('Update password', (group) => {
     await Database.rollbackGlobalTransaction()
   })
 
-  test('ensure a user has a 200 status code when it provides good inputs', async () => {
+  test('ensure a user has a 200 status code when it provides good inputs and its password is updated', async () => {
     const user = new SecurityUser()
     user.pseudonym = 'Romain Lanz'
     user.email = 'romain.lanz@hey.com'
@@ -69,13 +69,13 @@ test.group('Update password', (group) => {
 
     const inputs = {
       newPassword: 'newSecret',
-      newPasswordConfirmatio: 'newSecret',
+      newPassword_confirmation: 'newSecret',
     }
 
-    const response = await supertest(BASE_URL).put(signedUrl!).send(inputs).expect(200)
+    await supertest(BASE_URL).put(signedUrl!).send(inputs).expect(200)
   })
 
-  test('ensure request fails if it does not provide a valid signed url', async (assert) => {
+  test('ensure request fails if it does not provide a valid signed url', async () => {
     const user = new SecurityUser()
     user.pseudonym = 'Romain Lanz'
     user.email = 'romain.lanz@hey.com'
@@ -84,12 +84,29 @@ test.group('Update password', (group) => {
 
     const inputs = {
       newPassword: 'newSecret',
-      newPasswordConfirmatio: 'newSecret',
+      newPassword_confirmation: 'newSecret',
     }
 
-    const { body } = await supertest(BASE_URL)
-      .put('/password/reset/romain.lanz@hey.com')
-      .send(inputs)
-      .expect(400)
+    await supertest(BASE_URL).put('/password/reset/romain.lanz@hey.com').send(inputs).expect(400)
+  })
+
+  test('ensure request fails if inputs are not valids', async () => {
+    const user = new SecurityUser()
+    user.pseudonym = 'Romain Lanz'
+    user.email = 'romain.lanz@hey.com'
+    user.password = 'secret'
+    await user.save()
+    const signedUrl = Route.makeSignedUrl('password.reset', {
+      params: {
+        email: user.email,
+      },
+    })
+
+    const inputs = {
+      newPassword: 'newSecret',
+      newPassword_confirmation: 'oldSecret',
+    }
+
+    await supertest(BASE_URL).put(signedUrl!).send(inputs).expect(422)
   })
 })
