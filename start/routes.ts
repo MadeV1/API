@@ -22,3 +22,5 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.post('/register', 'AuthController.register').middleware('guest')
 Route.post('/login', 'AuthController.login').middleware('guest')
+Route.post('/ask-new-password', 'PasswordController.ask')
+Route.patch('/password/reset', 'PasswordController.update')
