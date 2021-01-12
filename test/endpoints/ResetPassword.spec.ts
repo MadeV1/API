@@ -3,8 +3,7 @@ import supertest from 'supertest'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
 import Route from '@ioc:Adonis/Core/Route'
-
-const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+import { BASE_URL } from 'test/utils/constants'
 
 test.group('Ask new password', (group) => {
   group.beforeEach(async () => {

@@ -2,8 +2,7 @@ import test from 'japa'
 import supertest from 'supertest'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
-
-const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+import { BASE_URL } from 'test/utils/constants'
 
 test.group('Registration', (group) => {
   group.beforeEach(async () => {
