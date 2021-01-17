@@ -4,11 +4,14 @@ import { join } from 'path'
 import getPort from 'get-port'
 import { configure } from 'japa'
 import sourceMapSupport from 'source-map-support'
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 
 process.env.NODE_ENV = 'testing'
 process.env.DB_CONNECTION = 'sqlite'
 process.env.ADONIS_ACE_CWD = join(__dirname)
 sourceMapSupport.install({ handleUncaughtExceptions: false })
+chai.use(chaiAsPromised)
 
 async function runMigrations() {
   await execa.node('ace', ['migration:run'], { stdio: 'inherit' })
