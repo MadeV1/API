@@ -7,12 +7,10 @@ const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Registration', (group) => {
   group.beforeEach(async () => {
-    console.log('start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
@@ -125,12 +123,10 @@ test.group('Registration', (group) => {
 
 test.group('Login', (group) => {
   group.beforeEach(async () => {
-    console.log('start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
