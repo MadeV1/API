@@ -7,7 +7,7 @@ export default class Projects extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name').unique().index()
-      table.string('type')
+      table.integer('category_id').unsigned().references('id').inTable('categories')
       table.string('difficulty')
       table.string('sketch').nullable()
       table.string('answer')

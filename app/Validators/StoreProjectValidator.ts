@@ -8,7 +8,7 @@ export default class StoreProjectValidator {
     name: schema.string({ trim: true, escape: true }, [
       rules.unique({ table: 'projects', column: 'name' }),
     ]),
-    type: schema.enum(['frontend', 'backend', 'fullstack']),
+    type: schema.string({}, [rules.exists({ table: 'categories', column: 'name' })]),
     difficulty: schema.enum(['easy', 'medium', 'hard']),
     sketch: schema.string({}, [
       rules.url({

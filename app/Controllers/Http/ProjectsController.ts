@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Project from 'App/Models/Project'
 import StoreProjectValidator from 'App/Validators/StoreProjectValidator'
 import Application from '@ioc:Adonis/Core/Application'
+import Category from 'App/Models/Category'
 
 export default class ProjectsController {
   public async index({}: HttpContextContract) {}
@@ -11,12 +12,14 @@ export default class ProjectsController {
 
     const projectDetails = await request.validate(StoreProjectValidator)
 
+    const category = await Category.findByOrFail('name', projectDetails.type)
+
     const project = new Project()
     project.name = projectDetails.name
-    project.type = projectDetails.type
     project.difficulty = projectDetails.difficulty
     project.sketch = projectDetails.sketch
     project.answer = projectDetails.answer
+    await project.related('category').associate(category)
     await project.related('user').associate(auth.user)
 
     const image = request.file('image')

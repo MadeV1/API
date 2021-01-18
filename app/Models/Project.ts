@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import SecurityUser from './SecurityUser'
+import Category from './Category'
 
 export default class Project extends BaseModel {
   @column({ isPrimary: true })
@@ -16,7 +17,12 @@ export default class Project extends BaseModel {
   public name: string
 
   @column()
-  public type: string
+  public categoryId: number
+
+  @belongsTo(() => Category, {
+    foreignKey: 'categoryId',
+  })
+  public category: BelongsTo<typeof Category>
 
   @column()
   public difficulty: string

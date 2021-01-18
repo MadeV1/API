@@ -5,6 +5,7 @@ import test from 'japa'
 import supertest from 'supertest'
 import fs from 'fs'
 import { SecurityUserFactory } from 'Database/factories'
+import Category from 'App/Models/Category'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
@@ -30,13 +31,25 @@ async function actingAs(user?: SecurityUser) {
 }
 
 test.group('Project tests', (group) => {
+  group.before(async () => {
+    const categories: string[] = ['frontend', 'backend', 'fullstack']
+    categories.forEach(async (categoryName) => {
+      const category = new Category()
+      category.name = categoryName
+      await category.save()
+    })
+  })
+
+  group.after(async () => {
+    const categories = await Category.all()
+    categories.forEach(async (category) => await category.delete())
+  })
+
   group.beforeEach(async () => {
-    console.log('[PROJECTS] Start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('[PROJECTS] Rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
@@ -61,13 +74,13 @@ test.group('Project tests', (group) => {
       .field('answer', inputs.answer)
       .attach('image', 'fixtures/images/project_thumbnail.webp')
 
-    const project = await Project.findByOrFail('name', inputs.name)
+    const project = await Project.query().preload('category').preload('user').where('name', inputs.name).firstOrFail()
     assert.equal(project.name, inputs.name)
-    assert.equal(project.type, inputs.type)
+    assert.equal(project.category.name, inputs.type)
     assert.equal(project.difficulty, inputs.difficulty)
     assert.equal(project.sketch, inputs.sketch)
     assert.equal(project.answer, inputs.answer)
-    assert.equal(project.userId, user.id)
+    assert.equal(project.user.id, user.id)
     assert.isFulfilled(fs.promises.access(`tmp/uploads/projects/${project.id}.webp`, fs.constants.F_OK))
   )
 
