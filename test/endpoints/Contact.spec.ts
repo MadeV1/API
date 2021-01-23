@@ -51,7 +51,6 @@ test.group('Contact form', () => {
       message:
         'MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage',
     }
-    console.log(inputs.message)
 
     await supertest(BASE_URL).post('/contact').send(inputs).expect(400)
   })

@@ -8,12 +8,10 @@ const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Ask new password', (group) => {
   group.beforeEach(async () => {
-    console.log('start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
@@ -46,12 +44,10 @@ test.group('Ask new password', (group) => {
 
 test.group('Update password', (group) => {
   group.beforeEach(async () => {
-    console.log('start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
