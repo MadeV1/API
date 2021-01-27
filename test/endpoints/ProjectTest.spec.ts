@@ -1,10 +1,10 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import Project from 'App/Models/Project'
 import SecurityUser from 'App/Models/SecurityUser'
-import test from 'japa'
+import test, { group } from 'japa'
 import supertest from 'supertest'
 import fs from 'fs'
-import { SecurityUserFactory } from 'Database/factories'
+import { ProjectFactory, SecurityUserFactory } from 'Database/factories'
 import Category from 'App/Models/Category'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
@@ -53,6 +53,24 @@ test.group('Project tests', (group) => {
     await Database.rollbackGlobalTransaction()
   })
 
+  /* Project index */
+  test('ensure it list last 5 projects by default', async (assert) => {
+    await ProjectFactory.createMany(5)
+
+    const response = await supertest(BASE_URL).get('/projects')
+
+    assert.lengthOf(response.body.data, 5)
+  })
+
+  test('ensure it list the specified amount of project', async (assert) => {
+    await ProjectFactory.createMany(20)
+
+    const response = await supertest(BASE_URL).get('/projects?perPage=10')
+
+    assert.lengthOf(response.body.data, 10)
+  })
+
+  /* Project creation */
   test('ensure we can create a projet with valid input if we are logged', async (assert) => {
     const { agent, user } = await actingAs()
 
@@ -74,15 +92,21 @@ test.group('Project tests', (group) => {
       .field('answer', inputs.answer)
       .attach('image', 'fixtures/images/project_thumbnail.webp')
 
-    const project = await Project.query().preload('category').preload('user').where('name', inputs.name).firstOrFail()
+    const project = await Project.query()
+      .preload('category')
+      .preload('user')
+      .where('name', inputs.name)
+      .firstOrFail()
     assert.equal(project.name, inputs.name)
     assert.equal(project.category.name, inputs.type)
     assert.equal(project.difficulty, inputs.difficulty)
     assert.equal(project.sketch, inputs.sketch)
     assert.equal(project.answer, inputs.answer)
     assert.equal(project.user.id, user.id)
-    assert.isFulfilled(fs.promises.access(`tmp/uploads/projects/${project.id}.webp`, fs.constants.F_OK))
-  )
+    assert.isFulfilled(
+      fs.promises.access(`tmp/uploads/projects/${project.id}.webp`, fs.constants.F_OK)
+    )
+  })
 
   test('ensure we cannot create a project as a guest', async () => {
     const inputs = {
