@@ -6,12 +6,10 @@ import test from 'japa'
 
 test.group('Send reset password email service', async (group) => {
   group.beforeEach(async () => {
-    console.log('start DB transaction')
     await Database.beginGlobalTransaction()
   })
 
   group.afterEach(async () => {
-    console.log('rollback DB transaction')
     await Database.rollbackGlobalTransaction()
   })
 
