@@ -5,7 +5,23 @@ import Application from '@ioc:Adonis/Core/Application'
 import Category from 'App/Models/Category'
 
 export default class ProjectsController {
-  public async index({}: HttpContextContract) {}
+  public async index({ request }: HttpContextContract) {
+    const projects = Project.query()
+
+    if (request.input('category')) {
+      projects.whereHas('category', (category) => category.where('name', request.input('category')))
+    }
+
+    if (request.input('difficulty')) {
+      projects.where('difficulty', request.input('difficulty'))
+    }
+
+    if (request.input('name')) {
+      projects.where('name', 'like', request.input('name'))
+    }
+
+    return await projects.paginate(request.input('page', 1), request.input('perPage', 5))
+  }
 
   public async store({ request, auth }: HttpContextContract) {
     if (!auth.user) return
