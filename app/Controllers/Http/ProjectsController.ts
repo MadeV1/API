@@ -16,6 +16,10 @@ export default class ProjectsController {
       projects.where('difficulty', request.input('difficulty'))
     }
 
+    if (request.input('name')) {
+      projects.where('name', 'like', request.input('name'))
+    }
+
     return await projects.paginate(request.input('page', 1), request.input('perPage', 5))
   }
 

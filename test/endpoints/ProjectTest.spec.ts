@@ -90,6 +90,16 @@ test.group('Project tests', (group) => {
     assert.lengthOf(response.body.data, 5)
   })
 
+  test('ensure it can filter projects by name', async (assert) => {
+    await ProjectFactory.merge({ name: 'Made' }).create()
+    await ProjectFactory.createMany(10)
+
+    const response = await supertest(BASE_URL).get('/projects?perPage=10&name=made')
+
+    assert.lengthOf(response.body.data, 1)
+    assert.equal(response.body.data[0].name, 'Made')
+  })
+
   /* Project creation */
   test('ensure we can create a projet with valid input if we are logged', async (assert) => {
     const { agent, user } = await actingAs()
