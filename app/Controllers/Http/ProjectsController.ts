@@ -8,6 +8,10 @@ export default class ProjectsController {
   public async index({ request }: HttpContextContract) {
     const projects = Project.query()
 
+    if (request.input('category')) {
+      projects.whereHas('category', (category) => category.where('name', request.input('category')))
+    }
+
     return await projects.paginate(request.input('page', 1), request.input('perPage', 5))
   }
 

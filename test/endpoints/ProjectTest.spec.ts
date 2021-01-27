@@ -70,6 +70,16 @@ test.group('Project tests', (group) => {
     assert.lengthOf(response.body.data, 10)
   })
 
+  test('ensure it can list projects only from a given category', async (assert) => {
+    await ProjectFactory.merge({ categoryId: 1 }).createMany(5)
+    await ProjectFactory.merge({ categoryId: 2 }).createMany(5)
+    await ProjectFactory.merge({ categoryId: 3 }).createMany(5)
+
+    const response = await supertest(BASE_URL).get('/projects?perPage=10&category=frontend')
+
+    assert.lengthOf(response.body.data, 5)
+  })
+
   /* Project creation */
   test('ensure we can create a projet with valid input if we are logged', async (assert) => {
     const { agent, user } = await actingAs()
