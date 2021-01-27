@@ -70,7 +70,7 @@ test.group('Project tests', (group) => {
     assert.lengthOf(response.body.data, 10)
   })
 
-  test('ensure it can list projects only from a given category', async (assert) => {
+  test('ensure it can filter projects by category', async (assert) => {
     await ProjectFactory.merge({ categoryId: 1 }).createMany(5)
     await ProjectFactory.merge({ categoryId: 2 }).createMany(5)
     await ProjectFactory.merge({ categoryId: 3 }).createMany(5)
@@ -80,7 +80,7 @@ test.group('Project tests', (group) => {
     assert.lengthOf(response.body.data, 5)
   })
 
-  test('ensure it can list projects only from a given difficulty', async (assert) => {
+  test('ensure it can filter projects by difficulty', async (assert) => {
     await ProjectFactory.merge({ difficulty: 'easy' }).createMany(5)
     await ProjectFactory.merge({ difficulty: 'medium' }).createMany(5)
     await ProjectFactory.merge({ difficulty: 'hard' }).createMany(5)
