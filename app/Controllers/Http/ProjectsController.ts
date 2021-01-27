@@ -12,6 +12,10 @@ export default class ProjectsController {
       projects.whereHas('category', (category) => category.where('name', request.input('category')))
     }
 
+    if (request.input('difficulty')) {
+      projects.where('difficulty', request.input('difficulty'))
+    }
+
     return await projects.paginate(request.input('page', 1), request.input('perPage', 5))
   }
 

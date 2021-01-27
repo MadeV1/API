@@ -80,6 +80,16 @@ test.group('Project tests', (group) => {
     assert.lengthOf(response.body.data, 5)
   })
 
+  test('ensure it can list projects only from a given difficulty', async (assert) => {
+    await ProjectFactory.merge({ difficulty: 'easy' }).createMany(5)
+    await ProjectFactory.merge({ difficulty: 'medium' }).createMany(5)
+    await ProjectFactory.merge({ difficulty: 'hard' }).createMany(5)
+
+    const response = await supertest(BASE_URL).get('/projects?perPage=10&difficulty=easy')
+
+    assert.lengthOf(response.body.data, 5)
+  })
+
   /* Project creation */
   test('ensure we can create a projet with valid input if we are logged', async (assert) => {
     const { agent, user } = await actingAs()
