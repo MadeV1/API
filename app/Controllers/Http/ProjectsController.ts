@@ -43,10 +43,14 @@ export default class ProjectsController {
       name: `${project.id}.${image.extname}`,
     })
 
-    return project
+    return project.serialize()
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ request }: HttpContextContract) {
+    const project = await Project.findOrFail(request.param('id'))
+
+    return project.serialize()
+  }
 
   public async update({}: HttpContextContract) {}
 

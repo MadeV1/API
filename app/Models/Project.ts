@@ -16,7 +16,7 @@ export default class Project extends BaseModel {
   @column()
   public name: string
 
-  @column()
+  @column({ serializeAs: null })
   public categoryId: number
 
   @belongsTo(() => Category, {
@@ -33,7 +33,7 @@ export default class Project extends BaseModel {
   @column()
   public answer: string
 
-  @column()
+  @column({ serializeAs: null })
   public userId: number
 
   @belongsTo(() => SecurityUser, {
