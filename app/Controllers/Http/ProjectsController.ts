@@ -47,7 +47,11 @@ export default class ProjectsController {
   }
 
   public async show({ request }: HttpContextContract) {
-    const project = await Project.findOrFail(request.param('id'))
+    const project = await Project.query()
+      .where('id', request.param('id'))
+      .preload('user')
+      .preload('category')
+      .firstOrFail()
 
     return project.serialize()
   }

@@ -193,4 +193,17 @@ test.group('Project tests', (group) => {
   test('ensure it send a 404 response if no model is found', async () => {
     await supertest(BASE_URL).get('/projects/1').expect(404)
   })
+
+  test('ensure it load category and user relationships', async (assert) => {
+    const project = await ProjectFactory.with('user')
+      .with('category', 1, (category) => category.merge({ name: 'temp' }))
+      .create()
+    await project.user.refresh()
+    await project.category.refresh()
+
+    const response = await supertest(BASE_URL).get(`/projects/${project.id}`)
+
+    assert.deepEqual(response.body.user, project.user.serialize())
+    assert.deepEqual(response.body.category, project.category.serialize())
+  })
 })
