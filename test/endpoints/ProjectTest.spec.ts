@@ -1,7 +1,7 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import Project from 'App/Models/Project'
 import SecurityUser from 'App/Models/SecurityUser'
-import test, { group } from 'japa'
+import test from 'japa'
 import supertest from 'supertest'
 import fs from 'fs'
 import { ProjectFactory, SecurityUserFactory } from 'Database/factories'
@@ -178,5 +178,32 @@ test.group('Project tests', (group) => {
       .field('sketch', inputs.sketch)
       .attach('image', 'fixtures/images/project_thumbnail.webp')
       .expect(422)
+  })
+
+  /* Project read */
+  test('ensure it can show a project', async (assert) => {
+    const project = await ProjectFactory.create()
+    await project.refresh()
+
+    const response = await supertest(BASE_URL).get(`/projects/${project.id}`)
+
+    assert.deepEqual(response.body, project.serialize())
+  })
+
+  test('ensure it send a 404 response if no model is found', async () => {
+    await supertest(BASE_URL).get('/projects/1').expect(404)
+  })
+
+  test('ensure it load category and user relationships', async (assert) => {
+    const project = await ProjectFactory.with('user')
+      .with('category', 1, (category) => category.merge({ name: 'temp' }))
+      .create()
+    await project.user.refresh()
+    await project.category.refresh()
+
+    const response = await supertest(BASE_URL).get(`/projects/${project.id}`)
+
+    assert.deepEqual(response.body.user, project.user.serialize())
+    assert.deepEqual(response.body.category, project.category.serialize())
   })
 })

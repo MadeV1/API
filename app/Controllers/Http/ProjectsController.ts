@@ -43,10 +43,18 @@ export default class ProjectsController {
       name: `${project.id}.${image.extname}`,
     })
 
-    return project
+    return project.serialize()
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ request }: HttpContextContract) {
+    const project = await Project.query()
+      .where('id', request.param('id'))
+      .preload('user')
+      .preload('category')
+      .firstOrFail()
+
+    return project.serialize()
+  }
 
   public async update({}: HttpContextContract) {}
 
