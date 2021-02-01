@@ -24,4 +24,8 @@ export default class AuthController {
 
     return await auth.attempt(email, password)
   }
+
+  public async me({ auth }: HttpContextContract) {
+    return auth.user?.serialize()
+  }
 }

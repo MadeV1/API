@@ -1,9 +1,31 @@
-import test from 'japa'
+import test, { only } from 'japa'
 import supertest from 'supertest'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
+import { SecurityUserFactory } from 'Database/factories'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+
+async function actingAs(user?: SecurityUser) {
+  const agent = supertest.agent(BASE_URL)
+
+  if (!user) {
+    user = await SecurityUserFactory.create()
+    await user.refresh()
+  }
+  user.password = 'secret'
+  await user.save()
+
+  await agent
+    .post('/login')
+    .send({
+      email: user.email,
+      password: 'secret',
+    })
+    .withCredentials()
+
+  return { user, agent }
+}
 
 test.group('Registration', (group) => {
   group.beforeEach(async () => {
@@ -161,4 +183,27 @@ test.group('Login', (group) => {
   })
 
   // TO DO: Add a test to disable login for logged in users
+})
+
+test.group('Get current user', (group) => {
+  group.beforeEach(async () => {
+    await Database.beginGlobalTransaction()
+  })
+
+  group.afterEach(async () => {
+    await Database.rollbackGlobalTransaction()
+  })
+
+  test('ensure a logged user can retrieve its information', async (assert) => {
+    const { user, agent } = await actingAs()
+    await user.refresh()
+
+    const { body } = await agent.get('/me').expect(200)
+
+    assert.deepEqual(user.serialize(), body)
+  })
+
+  test('ensure a guest has unauthorized error code while trying to fetch current user', async () => {
+    await supertest(BASE_URL).get('/me').expect(401)
+  })
 })
