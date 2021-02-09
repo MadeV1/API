@@ -33,6 +33,9 @@ export default class Project extends BaseModel {
   @column()
   public answer: string
 
+  @column()
+  public description: string
+
   @column({ serializeAs: null })
   public userId: number
 

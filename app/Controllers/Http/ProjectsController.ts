@@ -35,6 +35,7 @@ export default class ProjectsController {
     project.difficulty = projectDetails.difficulty
     project.sketch = projectDetails.sketch
     project.answer = projectDetails.answer
+    project.description = projectDetails.description
     await project.related('category').associate(category)
     await project.related('user').associate(auth.user)
 
