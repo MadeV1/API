@@ -110,7 +110,7 @@ test.group('Project tests', (group) => {
       difficulty: 'easy',
       sketch: 'https://www.figma.com/file/MPf4qYhf53RG2CDsglNlAS/Untitled',
       answer: 'https://www.github.com/MadeV1/API',
-      description:
+      body:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a tincidunt augue. Nunc mollis, mi id placerat aliquet, nunc lorem aliquet lectus, quis fringilla sapien diam sed eros. Nam metus metus, finibus vitae mauris ac, fermentum ultricies ipsum.',
     }
 
@@ -122,7 +122,7 @@ test.group('Project tests', (group) => {
       .field('difficulty', inputs.difficulty)
       .field('sketch', inputs.sketch)
       .field('answer', inputs.answer)
-      .field('description', inputs.description)
+      .field('body', inputs.body)
       .attach('image', 'fixtures/images/project_thumbnail.webp')
 
     const project = await Project.query()
@@ -135,7 +135,7 @@ test.group('Project tests', (group) => {
     assert.equal(project.difficulty, inputs.difficulty)
     assert.equal(project.sketch, inputs.sketch)
     assert.equal(project.answer, inputs.answer)
-    assert.equal(project.description, inputs.description)
+    assert.equal(project.body, inputs.body)
     assert.equal(project.user.id, user.id)
     assert.isFulfilled(
       fs.promises.access(`tmp/uploads/projects/${project.id}.webp`, fs.constants.F_OK)

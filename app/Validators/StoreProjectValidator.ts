@@ -26,7 +26,7 @@ export default class StoreProjectValidator {
       size: '2mb',
       extnames: ['png', 'webp', 'jpg', 'jpeg'],
     }),
-    description: schema.string(),
+    body: schema.string(),
   })
 
   public messages = {}
