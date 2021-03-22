@@ -20,7 +20,9 @@ export default class ProjectsController {
       projects.where('name', 'like', request.input('name'))
     }
 
-    return await projects.paginate(request.input('page', 1), request.input('perPage', 5))
+    return await projects
+      .preload('category')
+      .paginate(request.input('page', 1), request.input('perPage', 5))
   }
 
   public async store({ request, auth }: HttpContextContract) {
