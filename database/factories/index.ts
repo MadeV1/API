@@ -18,11 +18,13 @@ export const CategoryFactory = Factory.define(Category, () => {
 }).build()
 
 export const ProjectFactory = Factory.define(Project, ({ faker }) => {
+  const difficulties = ['easy', 'medium', 'hard']
   return {
-    name: faker.random.uuid(),
-    difficulty: faker.random.word(),
-    sketch: faker.internet.url(),
-    answer: faker.internet.url(),
+    name: faker.random.word(),
+    difficulty: difficulties[Math.floor(Math.random() * difficulties.length)],
+    sketch: `https://figma.com/file/${faker.random.uuid()}`,
+    answer: `https://github.com/${faker.random.uuid()}`,
+    body: faker.lorem.words(300),
   }
 })
   .relation('user', () => SecurityUserFactory)

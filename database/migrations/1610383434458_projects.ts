@@ -11,7 +11,7 @@ export default class Projects extends BaseSchema {
       table.string('difficulty')
       table.string('sketch').nullable()
       table.string('answer')
-      table.text('body')
+      table.text('body').notNullable()
       table.integer('user_id').unsigned().references('id').inTable('security_users')
       table.timestamps(true)
     })
