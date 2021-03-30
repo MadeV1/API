@@ -16,6 +16,9 @@ export default class SecurityUser extends BaseModel {
   public password: string
 
   @column()
+  public job: string
+
+  @column()
   public rememberMeToken?: string
 
   @column.dateTime({ autoCreate: true })

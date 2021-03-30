@@ -2,12 +2,14 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import Category from 'App/Models/Category'
 import Project from 'App/Models/Project'
 import SecurityUser from 'App/Models/SecurityUser'
+import { v4 as uuid } from 'uuid'
 
 export const SecurityUserFactory = Factory.define(SecurityUser, ({ faker }) => {
   return {
     pseudonym: faker.internet.userName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
+    job: ['développeur', 'designer', 'chef de projet'][Math.floor(Math.random() * 3)],
   }
 }).build()
 
