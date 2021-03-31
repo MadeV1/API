@@ -19,7 +19,7 @@ jobs:
           node-version: '15.x'
           npm-version: '6.x'
       - name: Install npm dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Run build TS app
         run: npm run build --if-present
