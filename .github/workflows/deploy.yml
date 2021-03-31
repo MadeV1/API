@@ -24,15 +24,6 @@ jobs:
       - name: Run build TS app
         run: npm run build --if-present
 
-      - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@v2.1.6
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.TARGET }}
-          EXCLUDE: '/build/, /node_modules/'
-
       - name: Post deploy commands
         uses: appleboy/ssh-action@master
         with:
@@ -41,6 +32,8 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
+            cd ${{ secrets.TARGET }}
+            git pull
             npm run build --if-present
             node ace migration:run
             node ace build --production
