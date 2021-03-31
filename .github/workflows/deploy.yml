@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - cd_tests
 
 jobs:
   build:
@@ -16,6 +17,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '15.x'
+          npm-version: '6.x'
       - name: Install npm dependencies
         run: npm install
 
