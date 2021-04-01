@@ -43,4 +43,3 @@ jobs:
           script: |
             cd ${{ secrets.TARGET }}
             npm ci --production
-            node ace migration:run --force
