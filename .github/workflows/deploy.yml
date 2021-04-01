@@ -42,7 +42,8 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           script: |
             cd ${{ secrets.TARGET }}
-            npm run build --if-present
+            yarn install --force
+            yarn build --if-present
             node ace migration:run
             node ace build --production
             sudo systemctl restart ${{ secrets.SERVICE }}
