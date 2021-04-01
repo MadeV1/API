@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '15.x'
-          npm-version: '6.x'
+
       - name: Install npm dependencies
         run: npm install --force
 
@@ -31,7 +31,6 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.TARGET }}
-          EXCLUDE: '/build/, /node_modules/'
 
       - name: Post deploy commands
         uses: appleboy/ssh-action@master
@@ -42,8 +41,6 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           script: |
             cd ${{ secrets.TARGET }}
-            yarn install --force
-            yarn build --if-present
-            node ace migration:run
-            node ace build --production
+            npm ci --production
+            node ace migration:run --force
             sudo systemctl restart ${{ secrets.SERVICE }}
