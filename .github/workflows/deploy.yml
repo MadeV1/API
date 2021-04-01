@@ -16,8 +16,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '15.x'
+
       - name: Install npm dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Run build TS app
         run: npm run build --if-present
@@ -29,17 +30,15 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.TARGET }}
-          EXCLUDE: '/build/, /node_modules/'
+          SOURCE: '/build/'
 
       - name: Post deploy commands
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASSWORD }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
-            npm run build --if-present
-            node ace migration:run
-            node ace build --production
-            sudo systemctl restart ${{ secrets.SERVICE }}
+            cd ${{ secrets.TARGET }}
+            npm ci --production
