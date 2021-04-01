@@ -31,6 +31,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.TARGET }}
+          SOURCE: '/build/'
 
       - name: Post deploy commands
         uses: appleboy/ssh-action@master
@@ -43,4 +44,3 @@ jobs:
             cd ${{ secrets.TARGET }}
             npm ci --production
             node ace migration:run --force
-            sudo systemctl restart ${{ secrets.SERVICE }}
