@@ -17,4 +17,14 @@ export default class RegistrationValidator {
     ]),
     password: schema.string({}, [rules.confirmed(), rules.minLength(6)]),
   })
+
+  public messages = {
+    'pseudonym.required': 'VALIDATION_PSEUDONYM_REQUIRED',
+    'email.required': 'VALIDATION_EMAIL_REQUIRED',
+    'email.email': 'VALIDATION_EMAIL_FORMAT',
+    'email.unique': 'VALIDATION_EMAIL_UNIQUE',
+    'email.maxLength': 'VALIDATION_EMAIL_MAXLENGTH',
+    'password.minLength': 'VALIDATION_PASSWORD_MINLENGTH',
+    'password_confirmation.confirmed': 'VALIDATION_PASSWORD_CONFIRMATION',
+  }
 }
