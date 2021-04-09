@@ -6,8 +6,16 @@ import Category from 'App/Models/Category'
 
 export default class ProjectsController {
   public async index({ request }: HttpContextContract) {
-    const projects = Project.query()
+    if (
+      !request.input('category') &&
+      !request.input('difficulty') &&
+      !request.input('name') &&
+      !request.input('perPage')
+    ) {
+      return (await Project.all()).map((project) => project.serialize())
+    }
 
+    const projects = Project.query()
     if (request.input('category')) {
       projects.whereHas('category', (category) => category.where('name', request.input('category')))
     }
