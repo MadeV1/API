@@ -20,6 +20,7 @@ export default class RegistrationValidator {
 
   public messages = {
     'pseudonym.required': 'VALIDATION_PSEUDONYM_REQUIRED',
+    'pseudonym.unique': 'VALIDATION_PSEUDONYM_UNIQUE',
     'email.required': 'VALIDATION_EMAIL_REQUIRED',
     'email.email': 'VALIDATION_EMAIL_FORMAT',
     'email.unique': 'VALIDATION_EMAIL_UNIQUE',

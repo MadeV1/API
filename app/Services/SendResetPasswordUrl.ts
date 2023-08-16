@@ -6,7 +6,7 @@ export default class SendResetPasswordUrl {
   public static async send(user: SecurityUser) {
     const signedUrl = Route.makeSignedUrl('password.reset', {
       params: {
-        email: user.email,
+        'user(email)': user.email,
       },
     })
 

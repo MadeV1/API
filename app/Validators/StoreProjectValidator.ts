@@ -12,14 +12,16 @@ export default class StoreProjectValidator {
     difficulty: schema.enum(['easy', 'medium', 'hard']),
     sketch: schema.string({}, [
       rules.url({
-        ensureProtocol: 'https',
-        hostWhitelist: ['figma.com', 'www.figma.com'],
+        protocols: ['https'],
+        allowedHosts: ['figma.com', 'www.figma.com'],
+        requireProtocol: true,
+        requireHost: true,
       }),
     ]),
     answer: schema.string({}, [
       rules.url({
-        ensureProtocol: 'https',
-        hostWhitelist: ['github.com', 'www.github.com'],
+        protocols: ['https'],
+        allowedHosts: ['github.com', 'www.github.com'],
       }),
     ]),
     image: schema.file({

@@ -22,7 +22,7 @@ export const CategoryFactory = Factory.define(Category, () => {
 export const ProjectFactory = Factory.define(Project, ({ faker }) => {
   const difficulties = ['easy', 'medium', 'hard']
   return {
-    name: `${uuid().slice(0, 4)}-${faker.random.word()}`,
+    name: `${uuid().slice(0, 4)}-${faker.lorem.word()}`,
     difficulty: difficulties[Math.floor(Math.random() * difficulties.length)],
     sketch: `https://figma.com/file/${uuid()}`,
     answer: `https://github.com/${uuid()}`,

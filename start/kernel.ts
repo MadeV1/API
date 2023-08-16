@@ -20,7 +20,11 @@ import Server from '@ioc:Adonis/Core/Server'
 | are defined for every HTTP requests.
 |
 */
-Server.middleware.register(['Adonis/Core/BodyParserMiddleware'])
+Server.middleware.register([
+  () => import('@ioc:Adonis/Core/BodyParser'),
+  () => import('@ioc:Adonis/Addons/RmbMiddleware'),
+  () => import('App/Middleware/SilentAuth'),
+])
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +42,7 @@ Server.middleware.register(['Adonis/Core/BodyParserMiddleware'])
 | Route.get('dashboard', 'UserController.dashboard').middleware('auth')
 |
 */
-Server.middleware.registerNamed({ guest: 'App/Middleware/Guest', auth: 'App/Middleware/Auth' })
+Server.middleware.registerNamed({
+  guest: () => import('App/Middleware/Guest'),
+  auth: () => import('App/Middleware/Auth'),
+})

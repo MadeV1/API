@@ -5,7 +5,7 @@
  * file.
  */
 
-import { BodyParserConfig } from '@ioc:Adonis/Core/BodyParser'
+import type { BodyParserConfig } from '@ioc:Adonis/Core/BodyParser'
 
 const bodyParserConfig: BodyParserConfig = {
   /*
@@ -53,6 +53,19 @@ const bodyParserConfig: BodyParserConfig = {
     encoding: 'utf-8',
     limit: '1mb',
     queryString: {},
+
+    /*
+    |--------------------------------------------------------------------------
+    | Convert empty strings to null
+    |--------------------------------------------------------------------------
+    |
+    | Convert empty form fields to null. HTML forms results in field string
+    | value when the field is left blank. This option normalizes all the blank
+    | field values to "null"
+    |
+    */
+    convertEmptyStringsToNull: true,
+
     types: ['application/x-www-form-urlencoded'],
   },
 
@@ -142,6 +155,18 @@ const bodyParserConfig: BodyParserConfig = {
     |
     */
     encoding: 'utf-8',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Convert empty strings to null
+    |--------------------------------------------------------------------------
+    |
+    | Convert empty form fields to null. HTML forms results in field string
+    | value when the field is left blank. This option normalizes all the blank
+    | field values to "null"
+    |
+    */
+    convertEmptyStringsToNull: true,
 
     /*
     |--------------------------------------------------------------------------

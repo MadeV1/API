@@ -1,3 +1,4 @@
+import { bind } from '@adonisjs/route-model-binding'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import SecurityUser from 'App/Models/SecurityUser'
 import SendResetMailValidator from 'App/Validators/SendResetMailValidator'
@@ -12,17 +13,17 @@ export default class PasswordController {
         code: 'E_RESET_PASSWORD_MAIL_SUCCESS',
       }
     } catch (error) {
-      response.status(404).send({
+      return response.status(404).send({
         code: 'E_USER_NOT_FOUND',
         ...error.messages,
       })
     }
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  @bind()
+  public async update({ request, response }: HttpContextContract, user: SecurityUser) {
     if (request.hasValidSignature()) {
       await request.validate(UpdatePasswordValidator)
-      const user = await SecurityUser.findByOrFail('email', params.email)
       user.password = request.input('newPassword')
       await user.save()
       return {

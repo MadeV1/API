@@ -24,7 +24,9 @@
     "@adonisjs/auth",
     "@adonisjs/session",
     "@adonisjs/mail",
-    "@adonisjs/view"
+    "@adonisjs/view",
+    "@adonisjs/route-model-binding/build/providers/RmbProvider",
+    "@adonisjs/drive-s3"
   ],
   "aceProviders": [
     "@adonisjs/repl"
@@ -34,5 +36,26 @@
       "pattern": "resources/views/**/*.edge",
       "reloadServer": false
     }
+  ],
+  "tests": {
+    "suites": [
+      {
+        "name": "endpoints",
+        "files": [
+          "tests/endpoints/**/*.spec(.ts|.js)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "name": "units",
+        "files": [
+          "tests/units/**/*.spec(.ts|.js)"
+        ],
+        "timeout": 60000
+      }
+    ]
+  },
+  "testProviders": [
+    "@japa/preset-adonis/TestsProvider"
   ]
 }

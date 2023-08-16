@@ -1,36 +1,33 @@
-import test from 'japa'
-import supertest from 'supertest'
+import { test } from '@japa/runner'
 import Database from '@ioc:Adonis/Lucid/Database'
 import SecurityUser from 'App/Models/SecurityUser'
 import Route from '@ioc:Adonis/Core/Route'
 
-const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
-
 test.group('Ask new password', (group) => {
-  group.beforeEach(async () => {
+  group.each.setup(async () => {
     await Database.beginGlobalTransaction()
+    return () => Database.rollbackGlobalTransaction()
   })
 
-  group.afterEach(async () => {
-    await Database.rollbackGlobalTransaction()
-  })
-
-  test('ensure user can ask a new password', async () => {
+  test('ensure user can ask a new password', async ({ client }) => {
     // Test initialization
     const user: SecurityUser = new SecurityUser()
     user.pseudonym = 'Hypa'
     user.email = 'hypa@hey.com'
     user.password = 'blabla'
     await user.save()
+
     const inputs = {
       email: 'hypa@hey.com',
     }
 
     // Test actions
-    await supertest(BASE_URL).post('/ask-new-password').send(inputs).expect(200)
+    const response = await client.post('/ask-new-password').json(inputs).send()
+
+    response.assertStatus(200)
   })
 
-  test('ensure it sends 404 if user not found', async () => {
+  test('ensure it sends 404 if user not found', async ({ client }) => {
     // Test initialization
     const inputs = {
       email: 'hype@hey.com',
@@ -38,20 +35,21 @@ test.group('Ask new password', (group) => {
 
     // Test actions
     // We expect a 404 response as the user does not exists
-    await supertest(BASE_URL).post('/ask-new-password').send(inputs).expect(404)
+    const response = await client.post('/ask-new-password').json(inputs).send()
+
+    response.assertStatus(404)
   })
 })
 
 test.group('Update password', (group) => {
-  group.beforeEach(async () => {
+  group.each.setup(async () => {
     await Database.beginGlobalTransaction()
+    return () => Database.rollbackGlobalTransaction()
   })
 
-  group.afterEach(async () => {
-    await Database.rollbackGlobalTransaction()
-  })
-
-  test('ensure a user has a 200 status code when it provides good inputs and its password is updated', async () => {
+  test('ensure a user has a 200 status code when it provides good inputs and its password is updated', async ({
+    client,
+  }) => {
     const user = new SecurityUser()
     user.pseudonym = 'Romain Lanz'
     user.email = 'romain.lanz@hey.com'
@@ -59,7 +57,7 @@ test.group('Update password', (group) => {
     await user.save()
     const signedUrl = Route.makeSignedUrl('password.reset', {
       params: {
-        email: user.email,
+        'user(email)': user.email,
       },
     })
 
@@ -68,10 +66,12 @@ test.group('Update password', (group) => {
       newPassword_confirmation: 'newSecret',
     }
 
-    await supertest(BASE_URL).put(signedUrl!).send(inputs).expect(200)
+    const response = await client.put(signedUrl!).json(inputs).send()
+
+    response.assertStatus(200)
   })
 
-  test('ensure request fails if it does not provide a valid signed url', async () => {
+  test('ensure request fails if it does not provide a valid signed url', async ({ client }) => {
     const user = new SecurityUser()
     user.pseudonym = 'Romain Lanz'
     user.email = 'romain.lanz@hey.com'
@@ -83,10 +83,12 @@ test.group('Update password', (group) => {
       newPassword_confirmation: 'newSecret',
     }
 
-    await supertest(BASE_URL).put('/password/reset/romain.lanz@hey.com').send(inputs).expect(400)
+    const response = await client.put('/password/reset/romain.lanz@hey.com').json(inputs).send()
+
+    response.assertStatus(400)
   })
 
-  test('ensure request fails if inputs are not valids', async () => {
+  test('ensure request fails if inputs are not valids', async ({ client }) => {
     const user = new SecurityUser()
     user.pseudonym = 'Romain Lanz'
     user.email = 'romain.lanz@hey.com'
@@ -94,7 +96,7 @@ test.group('Update password', (group) => {
     await user.save()
     const signedUrl = Route.makeSignedUrl('password.reset', {
       params: {
-        email: user.email,
+        'user(email)': user.email,
       },
     })
 
@@ -103,6 +105,8 @@ test.group('Update password', (group) => {
       newPassword_confirmation: 'oldSecret',
     }
 
-    await supertest(BASE_URL).put(signedUrl!).send(inputs).expect(422)
+    const response = await client.put(signedUrl!).json(inputs).send()
+
+    response.assertStatus(422)
   })
 })

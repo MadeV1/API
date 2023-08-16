@@ -1,39 +1,33 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Project from 'App/Models/Project'
 import StoreProjectValidator from 'App/Validators/StoreProjectValidator'
-import Application from '@ioc:Adonis/Core/Application'
 import Category from 'App/Models/Category'
+import { ray } from 'node-ray'
 
 export default class ProjectsController {
   public async index({ request }: HttpContextContract) {
-    if (
-      !request.input('category') &&
-      !request.input('difficulty') &&
-      !request.input('name') &&
-      !request.input('perPage')
-    ) {
-      return (await Project.all()).map((project) => project.serialize())
-    }
+    const query = Project.query()
 
-    const projects = Project.query()
     if (request.input('category')) {
-      projects.whereHas('category', (category) => category.where('name', request.input('category')))
+      query.whereHas('category', (category) => category.where('name', request.input('category')))
     }
 
     if (request.input('difficulty')) {
-      projects.where('difficulty', request.input('difficulty'))
+      query.where('difficulty', request.input('difficulty'))
     }
 
     if (request.input('name')) {
-      projects.where('name', 'like', request.input('name'))
+      query.where('name', 'like', request.input('name'))
     }
 
-    return await projects
+    const projects = await query
       .preload('category')
       .paginate(request.input('page', 1), request.input('perPage', 5))
+
+    return projects
   }
 
-  public async store({ request, auth }: HttpContextContract) {
+  public async store({ request, auth, response }: HttpContextContract) {
     if (!auth.user) return
 
     const projectDetails = await request.validate(StoreProjectValidator)
@@ -49,12 +43,15 @@ export default class ProjectsController {
     await project.related('category').associate(category)
     await project.related('user').associate(auth.user)
 
-    const image = request.file('image')
-    await image?.move(Application.tmpPath('uploads/projects'), {
-      name: `${project.id}.${image.extname}`,
-    })
+    projectDetails.image.moveToDisk(
+      'uploads/projects',
+      {
+        name: `${project.id}.${projectDetails.image.extname}`,
+      },
+      's3'
+    )
 
-    return project.serialize()
+    return response.created(project.serialize())
   }
 
   public async show({ request }: HttpContextContract) {
@@ -63,6 +60,8 @@ export default class ProjectsController {
       .preload('user')
       .preload('category')
       .firstOrFail()
+
+    ray(project.serialize())
 
     return project.serialize()
   }

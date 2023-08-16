@@ -1,11 +1,11 @@
 /**
- * Config source: https://git.io/JvyKy
+ * Config source: https://git.io/JY0mp
  *
  * Feel free to let us know via PR, if you find something broken in this config
  * file.
  */
 
-import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
+import type { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 */
 const authConfig: AuthConfig = {
   guard: 'web',
-  list: {
+  guards: {
     /*
     |--------------------------------------------------------------------------
     | Web Guard
